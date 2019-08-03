@@ -31,7 +31,8 @@
 //
 //========================================================================
 
-#include <glad/glad.h>
+#include <glad/gl.h>
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
 #include <stdio.h>
@@ -429,7 +430,7 @@ static void char_callback(GLFWwindow* window, unsigned int codepoint)
            get_character_string(codepoint));
 }
 
-static void drop_callback(GLFWwindow* window, int count, const char** paths)
+static void drop_callback(GLFWwindow* window, int count, const char* paths[])
 {
     int i;
     Slot* slot = glfwGetWindowUserPointer(window);
@@ -524,7 +525,7 @@ int main(int argc, char** argv)
                 break;
 
             case 'n':
-                count = (int) strtol(optarg, NULL, 10);
+                count = (int) strtoul(optarg, NULL, 10);
                 break;
 
             default:
@@ -549,12 +550,6 @@ int main(int argc, char** argv)
     {
         width  = 640;
         height = 480;
-    }
-
-    if (!count)
-    {
-        fprintf(stderr, "Invalid user\n");
-        exit(EXIT_FAILURE);
     }
 
     slots = calloc(count, sizeof(Slot));
@@ -610,7 +605,7 @@ int main(int argc, char** argv)
         glfwSetDropCallback(slots[i].window, drop_callback);
 
         glfwMakeContextCurrent(slots[i].window);
-        gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+        gladLoadGL(glfwGetProcAddress);
         glfwSwapInterval(1);
     }
 
